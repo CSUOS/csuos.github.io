@@ -17,6 +17,14 @@ module.exports = {
   },
   plugins: [
     {
+      resolve: '@mkitio/gatsby-theme-password-protect',
+      options: {
+        password: '42_the_answer_to_everything', // delete or `undefined` to disable password protection
+        pagePaths: ['/secret'],
+        partialMatching: true
+      }
+    },
+    {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
       // See the theme's README for all available options
       options: {
