@@ -47,7 +47,6 @@ const PasswordProtect = () => {
   const [password, setPassword] = useState('');
   const [isButtonHovered, buttonHover] = useState(false);
   const [isThemeHovered, themeHover] = useState(false);
-  const [isSiteHovered, siteHover] = useState(false);
 
   const onSubmit = event => {
     event.preventDefault();

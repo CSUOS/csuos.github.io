@@ -34,9 +34,17 @@ module.exports = {
             slug: `/blog`,
           },
           {
+            title: `공고`,
+            slug: `/career`,
+          },
+          {
             title: `소개`,
             slug: `/about`,
           },
+          {
+            title: `그라운드룰`,
+            slug: `/groundrules`,
+          }
         ],
         externalLinks: [
           {
@@ -56,9 +64,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
+        name: `CSUOS 개발자 블로그`,
+        short_name: `CSUOS@dev_blog`,
+        description: `CSUOS 개발자 블로그는 서울시립대 컴퓨터과학부 소모임 CSUOS에서 운영중인 개발 블로그 입니다.`,
         start_url: `/`,
         background_color: `#fff`,
         theme_color: `#6B46C1`,
