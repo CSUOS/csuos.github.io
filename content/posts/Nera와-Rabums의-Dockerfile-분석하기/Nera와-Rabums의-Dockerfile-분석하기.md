@@ -1,7 +1,20 @@
-﻿# Nera 와 Rabums 의 Dockerfile 분석하기
+﻿---
+title: "Nera 와 Rabums 의 Dockerfile 분석하기"
+date: 2020-09-13
+slug: "/dockerfile-analysis"
+---
 
-도커 컨테이너를 만들기 위해서는 도커 이미지를 필요로 하는데, Dockerfile 에 작성된 설정을 통해 이미지를 생성할 수도 있습니다. 
-Dockerfile 의 인스트럭션을 실행하는 단계마다 도커 이미지(Layer)를 생성하고 임시 컨테이너에서 실행하는 과정을 반복합니다. 단계 마다 생성된 임시 컨테이너는 삭제되고, 최종적으로는 하나의 이미지가 생성됩니다.
+# Nera 와 Rabums 의 Dockerfile 분석하기
+
+Dockerfile 은 도커 컨테이너를 만들기 위해 필요한 설정 파일입니다. Nera 와 Rabums 프로젝트의 Dockerfile 을 살펴보면서, 도커에 익숙해져 봅시다.
+
+## Docker 컨테이너 생성하기
+
+도커 컨테이너를 만들기 위해서는 도커 이미지를 필요로 하는데, 도커 허브에서 이미지를 다운 받거나, Dockerfile 에 작성된 설정을 통해 직접 이미지를 생성할 수도 있습니다. 
+
+Dockerfile 안의 명령을 인스트럭션이라고 하는데, `FROM`, `COPY`, `RUN` 등 설정을 변경할 수 있습니다. 
+
+하나의 인스트럭션을 실행할 때마다, 도커 이미지(Layer)를 생성하고 임시 컨테이너에서 실행하는 과정을 반복합니다. 단계 마다 생성된 임시 컨테이너는 삭제되고, 최종적으로는 하나의 이미지가 생성됩니다.
 
 
 ### 깃허브 Dockerfile 로 이미지 빌드하기
@@ -69,7 +82,7 @@ Nera 프로젝트는 `/page`에 프론트엔드 코드를, `/server`에 백엔�
 
 아래부터는 깃허브에 작성된 Dockerfile 을 바탕으로 이미지를 빌드하는 과정을 나열해 보겠습니다.
 
-![4](https://user-images.githubusercontent.com/68010286/93007718-f3b01180-f5a6-11ea-93aa-b8c4108f9c79.png)
+![dockerfile-analysis-1](./dockerfile-analysis-1.png)
 
 `Step 1/14`에서 저는 이미 `node:12` 가 있어 설치가 진행되지 않은 것 같고, `docker images` 를 통해 확인해보면 `bc72e39bf44c` 가 `node:12` 아이디와 일치함을 알 수 있습니다.
 
@@ -80,17 +93,17 @@ Nera 프로젝트는 `/page`에 프론트엔드 코드를, `/server`에 백엔�
 `Step 4/14: Run yarn` 을 수행하고 생긴 `Running in 684047e13948` 이미지는 `RUN` 명령어가 끝나고 `Removing intermediate container 684047e13948` 에서 삭제됩니다.
 
 
-![5](https://user-images.githubusercontent.com/68010286/93007728-13dfd080-f5a7-11ea-8fe5-e385bc304f7f.png)
+![dockerfile-analysis-2](./dockerfile-analysis-2.png)
 
 나머지 인스트럭션을 실행한 후, `Successfully built 6d2dc67c16dd` 의 이미지 아이디는 Nera 프로젝트의 최종 이미지가 됩니다.
 
 다음 그림에서 생성한 도커 이미지를 확인해보면 이미지 ID 가 `6d2dc67c16dd` 인 이미지를 확인할 수 있습니다.
 
-![6](https://user-images.githubusercontent.com/68010286/93007729-16dac100-f5a7-11ea-9685-bfac6919a5c1.png)
+![dockerfile-analysis-3](dockerfile-analysis-3.png)
 
 임의로 레포지토리와 태그를 설정해주었습니다. (레포지토리 이름은 csuos/nera 처럼 유저이름이 앞에 있는게 좋아요. 아래 그림은 잘못된 예입니다. 유저이름이 붙지 않은 레포지토리-*ubuntu:14.04 처럼*-는 오피셜 레포지토리에 사용한다고 합니다. )
 
-![7](https://user-images.githubusercontent.com/68010286/93007730-16dac100-f5a7-11ea-9730-1fca51a4f548.png)
+![dockerfile-analysis-4](dockerfile-analysis-4.png)
 
 
 ## Rabums 의 Dockerfile
