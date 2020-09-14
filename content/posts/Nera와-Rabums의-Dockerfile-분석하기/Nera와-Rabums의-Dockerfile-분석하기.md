@@ -6,28 +6,36 @@ slug: "/dockerfile-analysis"
 
 # Nera 와 Rabums 의 Dockerfile 분석하기
 
-Dockerfile 은 도커 컨테이너를 만들기 위해 필요한 설정 파일입니다. Nera 와 Rabums 프로젝트의 Dockerfile 을 살펴보면서, 도커에 익숙해져 봅시다.
+리눅스 공부를 하면서 가상머신을 설치해 보셨다면... 도커가 얼마나 편리하고 간편한 도구인지 알 수 있습니다. VM(Virtual machines)은 전체 운영체제를 복사해서 물리적으로 하드웨어 위에 설치하는 것이기 때문에, 엄청난 용량과 느린 부팅 속도를 갖고 있었죠.
+
+![docker-intro](./docker-intro.png)
+###### 출처 [https://www.docker.com/resources/what-container](https://www.docker.com/resources/what-container)
+
+
+하지만 도커의 컨테이너는 운영체제를 직접 가져오는 것이 아니라 원하는 환경의 설정과 패키지 코드를 추상화해서 컨테이너로 만든 것입니다(~~정확한 컨테이너 작동 방법은 저도 잘 모르겠습니다~~). 어쨌든 기존 VM 보다 빠르고 가볍다는 장점이 있죠.
+
+그리고 이때, **Dockerfile** 은 도커 컨테이너를 만들기 위해 필요한 설정 파일입니다. Nera 와 Rabums 프로젝트의 Dockerfile 을 살펴보면서, 도커에 익숙해져 봅시다.
 
 ## Docker 컨테이너 생성하기
 
-도커 컨테이너를 만들기 위해서는 도커 이미지를 필요로 하는데, 도커 허브에서 이미지를 다운 받거나, Dockerfile 에 작성된 설정을 통해 직접 이미지를 생성할 수도 있습니다. 
-
-Dockerfile 안의 명령을 인스트럭션이라고 하는데, `FROM`, `COPY`, `RUN` 등 설정을 변경할 수 있습니다. 
-
-하나의 인스트럭션을 실행할 때마다, 도커 이미지(Layer)를 생성하고 임시 컨테이너에서 실행하는 과정을 반복합니다. 단계 마다 생성된 임시 컨테이너는 삭제되고, 최종적으로는 하나의 이미지가 생성됩니다.
-
+도커 컨테이너를 만들기 위해서는 **도커 이미지**를 필요로 하는데, 도커 허브에서 이미지를 다운 받거나, Dockerfile 에 작성된 설정을 통해 직접 이미지를 생성할 수도 있습니다. 
 
 ### 깃허브 Dockerfile 로 이미지 빌드하기
 `docker build https://github.com/CSUOS/nera.git` 명령어를 입력하고 `docker images`를 통해 이미지가 생성되었는지 확인해봅니다. 
 이미 레포지토리를 받아놨다면, Dockerfile 이 있는 폴더에서 `docker build .` 명령어를 입력합니다.
 다양한 옵션을 주고 싶다면 [여기](https://docs.docker.com/engine/reference/commandline/build/)를 참고해주세요.
 
+Dockerfile 안의 명령을 인스트럭션이라고 하는데, `FROM`, `COPY`, `RUN` 등으로 설정을 변경할 수 있습니다. 
+
+하나의 인스트럭션을 실행할 때마다, 도커 이미지(Layer)를 생성하고 임시 컨테이너에서 실행하는 과정을 반복합니다. 단계 마다 생성된 임시 컨테이너는 삭제되고, 최종적으로는 하나의 이미지가 생성됩니다. (아래에서 더 자세히 살펴볼게요!)
+
 ### 도커 허브에서 이미지 가져오기
-이미지를 생성하는 데에는 Dockerfile 외에도 도커허브에서 가져오는 방법이 있습니다. 
+이미지를 생성하는 데에는 Dockerfile 을 통한 빌드 외에도 도커허브에서 가져오는 방법이 있습니다. 
 `docker pull csuos/nera` 를 입력하면, csuos 라는 도커 허브 유저의 nera 레포지토리를 가져온다는 의미입니다. 
 
 ### 도커 이미지로 컨테이너 실행하기
-`docker images`를 통해 불러온 이미지 목록을 확인할 수 있습니다. 이미지로 컨테이너를 실행하기 위해서는 `docker run csuos/nera` 를 입력합니다. `docker ps` 를 통해 현재 실행 중인 컨테이너 목록을 확인할 수 있습니다.
+`docker images`를 통해 불러온 이미지 목록을 확인해 봅시다. Dockerfile 로 이미지를 빌드하거나, 허브에서 이미지를 가져왔다면 컨테이너를 실행하는 일만 남았습니다.
+ 이미지로 컨테이너를 실행하기 위해서는 `docker run csuos/nera` 를 입력합니다. `docker ps` 를 통해 현재 실행 중인 컨테이너 목록을 확인할 수 있습니다.
 `docker run` 과 관련된 옵션도 다양합니다. [참고](https://docs.docker.com/engine/reference/commandline/run/)
 
 만약 `csuos/nera` 이미지가 존재하지 않는다면, 도커는 자동으로 허브에서 이미지를 불러오고 실행하게 됩니다.
