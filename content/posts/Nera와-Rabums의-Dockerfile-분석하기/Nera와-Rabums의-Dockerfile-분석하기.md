@@ -4,7 +4,7 @@ date: 2020-09-13
 slug: "/dockerfile-analysis"
 ---
 
-# Nera 와 Rabums 의 Dockerfile 분석하기
+안녕하세요, CSUOS 의 DevOps 팀원인 장다래입니다.
 
 리눅스 공부를 하면서 가상머신을 설치해 보셨다면... 도커가 얼마나 편리하고 간편한 도구인지 알 수 있습니다. VM(Virtual machines)은 전체 운영체제를 복사해서 물리적으로 하드웨어 위에 설치하는 것이기 때문에, 엄청난 용량과 느린 부팅 속도를 갖고 있었죠.
 
@@ -142,6 +142,18 @@ COPY --from=nuxt-builder /usr/src/app/dist/. /dist/.
 CMD ["/bin/rabums"]
 ```
 
-Rabums 프로젝트는 `FROM` 인스트럭션이 3개네요. 각각 `node:12`, `golang:1.14`, `alpine:3.11.3`을 사용하고 있습니다.  파일 빌드 과정을 단순화 하기 위해 역시 multi-stage 빌드를 사용하고 있습니다. `COPY --from=go-builder /go/bin/rabums /bin/rabums` 로 `golang:1.14` 환경을 합치고, `COPY --from=nuxt-builder /usr/src/app/dist/. `로 `node:12`를 추가합니다. 
+Rabums 프로젝트는 `FROM` 인스트럭션이 3개네요. 각각 `node:12`, `golang:1.14`, `alpine:3.11.3`을 사용하고 있습니다. 각각의 이미지에서 작업 폴더를 설정(`WORKDIR`)해 필요한 파일들을 복사(`COPY`)하고 실행(`RUN`)하는 것을 알 수 있습니다. 
 
 `RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*` 처럼 여러개의 `RUN` 인스트럭션을 사용하는 대신,  `&&` 를 사용해 이미지 레이어 생성과정을 줄인 점도 눈여겨 볼 수 있습니다.
+
+마지막 두 줄의 `COPY` 인스트럭션에서는 앞서 작업한 `node:12`와 `golang:1.14` 이미지에서 작업했던 결과를 `alpine:3.11.3` 의 이미지에 추가하여 하나의 파일을 만들고 있습니다. `COPY --from=go-builder /go/bin/rabums /bin/rabums` 에서는 `/go/bin/rabums`에서 하나의 바이러니 파일만 `/bin/rabums` 에 옮기고, `COPY --from=nuxt-builder /usr/src/app/dist/. `에서는 `/usr/src/app/dist/.` dist 폴더의 파일들(js, html, 등등..)을 `/dist/.`로 옮겨 최종 이미지를 만들게 됩니다. 
+
+앞의 Nera 에서도 multi stage build 를 통해 다른 작업 환경의 결과물을 이미지에 추가했는데, 왜 이렇게 해야할까요? 자세한 내용은 [여기](https://docs.docker.com/develop/develop-images/multistage-build/)에서 확인할 수 있지만, 간단하게 설명해보겠습니다. 
+
+도커 17.05 이전 버전에서 여러 작업 환경의 결과물들을 하나로 합치려면 여러 개의 인스트럭션을 사용해야 했습니다. 앞서 설명했듯이, 인스트럭션 하나당 컨테이너 하나를 생성하고 이미지를 커밋하는 과정이 필요하기 때문에, 용량도 커지고 속도도 느려지게 되는 것이지요. Nera 나 Rabums 에 사용된 multi stage build 는 이런 단점을 보완하기 위해 캐시를 통해 이미지를 빌드합니다. 덕분에 최종 이미지 크기를 줄이고, 속도도 향상되어 이미지를 빌드할 수 있게 됩니다.
+
+## Dockerfile 작성을 할 때.. 
+
+글을 살펴보았을 때, Dockerfile 을 작성하기 위해선 **효율성**에 중심을 두어야 한다는 걸 알 수 있습니다. 인스트럭션을 적게 사용해야하고, 많이 사용할 경우 `&&` 을 사용해 한 줄의 명령어로 해결할 수 있도록 해야합니다. 또한 multi stage build 를 통해 파일을 캐싱할 경우 더 적은 용량으로 이미지를 만들 수 있습니다. 
+
+이번 글을 통해 Dockerfile 과 Docker 에 대한 이해를 도왔기를 바라며, 이만 글을 마치겠습니다. 😉
