@@ -1,0 +1,1 @@
+{"data":{"minimalBlogConfig":{"basePath":"/","blogPath":"/blog","postsPath":"content/posts","pagesPath":"content/pages","tagsPath":"/tags","externalLinks":[{"name":"Github","url":"https://github.com/CSUOS"}],"navigation":[{"title":"목차","slug":"/blog"},{"title":"공고","slug":"/career"},{"title":"소개","slug":"/about"},{"title":"그라운드룰","slug":"/groundrules"}],"showLineNumbers":true}}}
